@@ -2,6 +2,8 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
+    using StoreAPI.Datatypes;
+    using StoreAPI.Model;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Security.Cryptography;
@@ -11,22 +13,33 @@
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public static User user = new ();
         private readonly IConfiguration _configuration;
+        private readonly DataContext _context;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, DataContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
+            if (await _context.Users.FindAsync(request.Username) != null)
+            {
+                return BadRequest("Username already exists");
+            }
+            
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.Username = request.Username;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            var user = new User
+            {
+                Username = request.Username,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
+
+            await _context.Users.AddAsync(user);
 
             return Ok(user);
         }
@@ -34,7 +47,9 @@
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDto request)
         {
-            if (user.Username != request.Username)
+            var user = await _context.Users.FindAsync(request.Username);
+            
+            if (user == null)
             {
                 return BadRequest("Invalid username");
             }
@@ -68,7 +83,7 @@
 
         private string CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username)
             };
