@@ -6,10 +6,9 @@ namespace StoreAPI.Model
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [JsonIgnore]
-        public User CreatedBy { get; set; }
         [ForeignKey(nameof(User))]
         public int CreatorId { get; set; }
+        public virtual User CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string Title { get; set; }
         public string Summary { get; set; }

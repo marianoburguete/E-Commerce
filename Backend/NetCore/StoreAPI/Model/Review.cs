@@ -9,18 +9,15 @@ namespace StoreAPI.Model
         public string Title { get; set; }
         public string Description { get; set; }
         public int Rating { get; set; }
-        [JsonIgnore]
-        public Product Product { get; set; }
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
-        [JsonIgnore]
-        public User Purchaser { get; set; }
+        public virtual Product Product { get; set; }
         [ForeignKey(nameof(User))]
         public int PurchaserId { get; set; }
-        [JsonIgnore]
-        public Order Order { get; set; }
+        public virtual User Purchaser { get; set; }
         [ForeignKey(nameof(Order))]
         public int OrderId { get; set; }
+        public virtual Order Order { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
