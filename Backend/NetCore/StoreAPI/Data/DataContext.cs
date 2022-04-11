@@ -100,11 +100,6 @@ namespace StoreAPI.Data
                 .OnDelete(DeleteBehavior.NoAction); // No borro las ordenes si se borra el usuario
 
             modelBuilder.Entity<User>()
-                .HasMany(e => e.MyProducts)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade); // Borro los productos si se borra el usuario
-
-            modelBuilder.Entity<User>()
                 .HasOne(e => e.DefaultBillingAddress)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
