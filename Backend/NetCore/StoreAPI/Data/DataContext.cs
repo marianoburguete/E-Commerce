@@ -30,6 +30,12 @@ namespace StoreAPI.Data
                 .OnDelete(DeleteBehavior.NoAction); // No borro al producto si se borra la item del carrito
 
             modelBuilder.Entity<Order>()
+                .HasOne(e => e.Purchaser)
+                .WithMany(d => d.Orders)
+                .HasForeignKey(e => e.PurchaserId)
+                .OnDelete(DeleteBehavior.NoAction); // No borro el usuario si se borra la orden
+
+            modelBuilder.Entity<Order>()
                 .HasOne(e => e.ShippingAddress)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction); // No borro la direccion de envio si se borra la orden
@@ -93,11 +99,6 @@ namespace StoreAPI.Data
                 .HasOne(e => e.Cart)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Cascade); // Borro el carrito si se borra el usuario
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.Orders)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction); // No borro las ordenes si se borra el usuario
 
             modelBuilder.Entity<User>()
                 .HasOne(e => e.DefaultBillingAddress)
