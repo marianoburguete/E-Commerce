@@ -3,6 +3,9 @@ global using StoreAPI.Data;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Text.Json.Serialization;
+global using StoreAPI.Model;
+global using StoreAPI.Datatypes;
+global using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 

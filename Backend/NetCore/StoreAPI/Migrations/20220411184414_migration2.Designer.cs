@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreAPI.Data;
 
@@ -11,9 +12,10 @@ using StoreAPI.Data;
 namespace StoreAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220411184414_migration2")]
+    partial class migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,6 +231,9 @@ namespace StoreAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
+
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
@@ -260,7 +265,7 @@ namespace StoreAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("UserId");
 
@@ -291,6 +296,9 @@ namespace StoreAPI.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId2")
                         .HasColumnType("int");
 
@@ -303,6 +311,8 @@ namespace StoreAPI.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("Questions");
                 });
@@ -328,6 +338,9 @@ namespace StoreAPI.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId2")
                         .HasColumnType("int");
 
@@ -343,10 +356,11 @@ namespace StoreAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.HasIndex("PurchaserId");
 
@@ -364,7 +378,7 @@ namespace StoreAPI.Migrations
                     b.Property<DateTime>("Birth")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("CartId")
+                    b.Property<int>("CartId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -509,7 +523,7 @@ namespace StoreAPI.Migrations
                 {
                     b.HasOne("StoreAPI.Model.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatorId")
+                        .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -524,15 +538,21 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Question", b =>
                 {
                     b.HasOne("StoreAPI.Model.User", "Author")
-                        .WithMany("Questions")
+                        .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("StoreAPI.Model.Product", "Product")
-                        .WithMany("Questions")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("StoreAPI.Model.Product", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("ProductId1")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -543,19 +563,25 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Review", b =>
                 {
                     b.HasOne("StoreAPI.Model.Order", "Order")
-                        .WithOne()
-                        .HasForeignKey("StoreAPI.Model.Review", "OrderId")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("StoreAPI.Model.Product", "Product")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("StoreAPI.Model.User", "Purchaser")
+                    b.HasOne("StoreAPI.Model.Product", null)
                         .WithMany("Reviews")
+                        .HasForeignKey("ProductId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StoreAPI.Model.User", "Purchaser")
+                        .WithMany()
                         .HasForeignKey("PurchaserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -572,7 +598,8 @@ namespace StoreAPI.Migrations
                     b.HasOne("StoreAPI.Model.Cart", "Cart")
                         .WithMany()
                         .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("StoreAPI.Model.Address", "DefaultBillingAddress")
                         .WithMany()
@@ -617,10 +644,6 @@ namespace StoreAPI.Migrations
                     b.Navigation("MyProducts");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("Questions");
-
-                    b.Navigation("Reviews");
 
                     b.Navigation("ShippingAddresses");
                 });

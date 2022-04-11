@@ -64,29 +64,33 @@ namespace StoreAPI.Data
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade); // Borro las reviews si se borra el producto
 
-            modelBuilder.Entity<Question>()
+            modelBuilder.Entity<Question>() // FIXED
                 .HasOne(e => e.Product)
-                .WithMany()
+                .WithMany(d => d.Questions)
+                .HasForeignKey(e => e.ProductId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro el producto si se borra la pregunta
 
-            modelBuilder.Entity<Question>()
+            modelBuilder.Entity<Question>() // FIXED
                 .HasOne(e => e.Author)
-                .WithMany()
+                .WithMany(d => d.Questions)
+                .HasForeignKey(e => e.AuthorId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra la pregunta
 
-            modelBuilder.Entity<Review>()
+            modelBuilder.Entity<Review>() // FIXED
                 .HasOne(e => e.Product)
-                .WithMany()
+                .WithMany(d => d.Reviews)
+                .HasForeignKey(e => e.ProductId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro el producto si se borra la review
 
-            modelBuilder.Entity<Review>()
+            modelBuilder.Entity<Review>() // FIXED
                 .HasOne(e => e.Purchaser)
-                .WithMany()
+                .WithMany(d => d.Reviews)
+                .HasForeignKey(e => e.PurchaserId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra la review
 
             modelBuilder.Entity<Review>()
                 .HasOne(e => e.Order)
-                .WithMany()
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction); // No borro la orden si se borra la review
             
             modelBuilder.Entity<User>()
@@ -108,6 +112,16 @@ namespace StoreAPI.Data
                 .HasMany(e => e.MyProducts)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade); // Borro los productos si se borra el usuario
+
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.DefaultBillingAddress)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.DefaultShippingAddress)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -25,18 +25,27 @@
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
-            if (await _context.Users.FindAsync(request.Username) != null)
+            if (await _context.Users.Where(x => x.Username == request.Username).AnyAsync())
             {
                 return BadRequest("Username already exists");
             }
-            
+
+            if (await _context.Users.Where(x => x.Email == request.Email).AnyAsync())
+            {
+                return BadRequest("Email already exists");
+            }
+
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var user = new User
             {
                 Username = request.Username,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
+                PasswordSalt = passwordSalt,
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Birth = request.Birth,
             };
 
             _context.Users.Add(user);
