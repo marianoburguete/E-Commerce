@@ -1,5 +1,8 @@
 global using Microsoft.EntityFrameworkCore;
 global using StoreAPI.Data;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
