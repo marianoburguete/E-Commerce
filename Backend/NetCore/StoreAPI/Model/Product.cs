@@ -6,7 +6,7 @@ namespace StoreAPI.Model
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [ForeignKey("CreatedBy")]
+        [ForeignKey(nameof(User))]
         public int CreatorId { get; set; }
         public virtual User CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -22,5 +22,6 @@ namespace StoreAPI.Model
         public float AvarageScore { get; set; } = 0;
         public List<Question> Questions { get; set; } = new List<Question>();
         public List<Review> Reviews { get; set; } = new List<Review>();
+        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }

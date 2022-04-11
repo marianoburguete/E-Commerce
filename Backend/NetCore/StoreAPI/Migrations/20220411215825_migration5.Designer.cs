@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreAPI.Data;
 
@@ -11,9 +12,10 @@ using StoreAPI.Data;
 namespace StoreAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220411215825_migration5")]
+    partial class migration5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +64,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Cart", b =>
@@ -80,7 +82,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.CartItem", b =>
@@ -106,7 +108,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem", (string)null);
+                    b.ToTable("CartItem");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Image", b =>
@@ -131,7 +133,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Image", (string)null);
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Order", b =>
@@ -179,7 +181,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.OrderItem", b =>
@@ -208,7 +210,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItem", (string)null);
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Product", b =>
@@ -264,7 +266,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Question", b =>
@@ -301,7 +303,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Review", b =>
@@ -344,7 +346,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("PurchaserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.User", b =>
@@ -402,7 +404,7 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("DefaultShippingAddressId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Address", b =>

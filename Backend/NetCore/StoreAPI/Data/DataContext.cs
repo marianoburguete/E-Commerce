@@ -46,23 +46,14 @@ namespace StoreAPI.Data
 
             modelBuilder.Entity<Product>()
                 .HasOne(e => e.CreatedBy)
-                .WithMany()
+                .WithMany(d => d.MyProducts)
+                .HasForeignKey(e => e.CreatorId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra el producto
 
             modelBuilder.Entity<Product>()
                 .HasMany(e => e.Images)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade); // Borro las imagenes si se borra el producto
-
-            modelBuilder.Entity<Product>()
-                .HasMany(e => e.Questions)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade); // Borro las preguntas si se borra el producto
-
-            modelBuilder.Entity<Product>()
-                .HasMany(e => e.Reviews)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade); // Borro las reviews si se borra el producto
 
             modelBuilder.Entity<Question>() // FIXED
                 .HasOne(e => e.Product)
