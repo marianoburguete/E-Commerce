@@ -12,8 +12,8 @@ using StoreAPI.Data;
 namespace StoreAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220411184414_migration2")]
-    partial class migration2
+    [Migration("20220412000620_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,15 +44,8 @@ namespace StoreAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
@@ -61,8 +54,6 @@ namespace StoreAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Addresses");
                 });
@@ -165,12 +156,6 @@ namespace StoreAPI.Migrations
                     b.Property<float>("Total")
                         .HasColumnType("real");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId1")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BillingAddressId");
@@ -178,8 +163,6 @@ namespace StoreAPI.Migrations
                     b.HasIndex("PurchaserId");
 
                     b.HasIndex("ShippingAddressId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Orders");
                 });
@@ -231,9 +214,6 @@ namespace StoreAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("int");
-
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
@@ -249,6 +229,9 @@ namespace StoreAPI.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("Sales")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartsAt")
                         .HasColumnType("datetime2");
 
@@ -260,14 +243,9 @@ namespace StoreAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Products");
                 });
@@ -296,12 +274,6 @@ namespace StoreAPI.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId2")
-                        .HasColumnType("int");
-
                     b.Property<string>("QuestionText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -311,8 +283,6 @@ namespace StoreAPI.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.ToTable("Questions");
                 });
@@ -338,12 +308,6 @@ namespace StoreAPI.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId2")
-                        .HasColumnType("int");
-
                     b.Property<int>("PurchaserId")
                         .HasColumnType("int");
 
@@ -356,11 +320,10 @@ namespace StoreAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.HasIndex("PurchaserId");
 
@@ -378,17 +341,11 @@ namespace StoreAPI.Migrations
                     b.Property<DateTime>("Birth")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CartId")
+                    b.Property<int?>("CartId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("DefaultBillingAddressId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DefaultShippingAddressId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -418,23 +375,18 @@ namespace StoreAPI.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("DefaultBillingAddressId");
-
-                    b.HasIndex("DefaultShippingAddressId");
-
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Address", b =>
                 {
-                    b.HasOne("StoreAPI.Model.User", null)
-                        .WithMany("BillingAddresses")
+                    b.HasOne("StoreAPI.Model.User", "User")
+                        .WithMany("Addresses")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("StoreAPI.Model.User", null)
-                        .WithMany("ShippingAddresses")
-                        .HasForeignKey("UserId1");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Cart", b =>
@@ -474,26 +426,20 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Order", b =>
                 {
                     b.HasOne("StoreAPI.Model.Address", "BillingAddress")
-                        .WithMany()
+                        .WithMany("OrdersBilling")
                         .HasForeignKey("BillingAddressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("StoreAPI.Model.User", "Purchaser")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("PurchaserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StoreAPI.Model.Address", "ShippingAddress")
-                        .WithMany()
-                        .HasForeignKey("ShippingAddressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("StoreAPI.Model.User", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId1")
+                    b.HasOne("StoreAPI.Model.Address", "ShippingAddress")
+                        .WithMany("OrdersShipping")
+                        .HasForeignKey("ShippingAddressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -522,15 +468,10 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Product", b =>
                 {
                     b.HasOne("StoreAPI.Model.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
+                        .WithMany("MyProducts")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("StoreAPI.Model.User", null)
-                        .WithMany("MyProducts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("CreatedBy");
                 });
@@ -538,21 +479,15 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Question", b =>
                 {
                     b.HasOne("StoreAPI.Model.User", "Author")
-                        .WithMany()
+                        .WithMany("Questions")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("StoreAPI.Model.Product", "Product")
-                        .WithMany()
+                        .WithMany("Questions")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("StoreAPI.Model.Product", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("ProductId1")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -563,25 +498,19 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Review", b =>
                 {
                     b.HasOne("StoreAPI.Model.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
+                        .WithOne()
+                        .HasForeignKey("StoreAPI.Model.Review", "OrderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("StoreAPI.Model.Product", "Product")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("StoreAPI.Model.Product", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProductId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("StoreAPI.Model.User", "Purchaser")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("PurchaserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -597,25 +526,16 @@ namespace StoreAPI.Migrations
                 {
                     b.HasOne("StoreAPI.Model.Cart", "Cart")
                         .WithMany()
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StoreAPI.Model.Address", "DefaultBillingAddress")
-                        .WithMany()
-                        .HasForeignKey("DefaultBillingAddressId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("StoreAPI.Model.Address", "DefaultShippingAddress")
-                        .WithMany()
-                        .HasForeignKey("DefaultShippingAddressId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("CartId");
 
                     b.Navigation("Cart");
+                });
 
-                    b.Navigation("DefaultBillingAddress");
+            modelBuilder.Entity("StoreAPI.Model.Address", b =>
+                {
+                    b.Navigation("OrdersBilling");
 
-                    b.Navigation("DefaultShippingAddress");
+                    b.Navigation("OrdersShipping");
                 });
 
             modelBuilder.Entity("StoreAPI.Model.Cart", b =>
@@ -639,13 +559,15 @@ namespace StoreAPI.Migrations
 
             modelBuilder.Entity("StoreAPI.Model.User", b =>
                 {
-                    b.Navigation("BillingAddresses");
+                    b.Navigation("Addresses");
 
                     b.Navigation("MyProducts");
 
                     b.Navigation("Orders");
 
-                    b.Navigation("ShippingAddresses");
+                    b.Navigation("Questions");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

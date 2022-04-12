@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StoreAPI.Migrations
 {
-    public partial class migration1 : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,12 +15,11 @@ namespace StoreAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,23 +68,16 @@ namespace StoreAPI.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Birth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DefaultBillingAddressId = table.Column<int>(type: "int", nullable: true),
-                    CartId = table.Column<int>(type: "int", nullable: false)
+                    CartId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Addresses_DefaultBillingAddressId",
-                        column: x => x.DefaultBillingAddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Users_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -100,9 +92,7 @@ namespace StoreAPI.Migrations
                     Total = table.Column<float>(type: "real", nullable: false),
                     ShippingAddressId = table.Column<int>(type: "int", nullable: false),
                     BillingAddressId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<int>(type: "int", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,12 +111,6 @@ namespace StoreAPI.Migrations
                         name: "FK_Orders_Users_PurchaserId",
                         column: x => x.PurchaserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_Users_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
@@ -137,7 +121,6 @@ namespace StoreAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatorId = table.Column<int>(type: "int", nullable: false),
-                    CreatedById = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Summary = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -146,24 +129,18 @@ namespace StoreAPI.Migrations
                     EndsAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    Sales = table.Column<int>(type: "int", nullable: false),
                     ItemsSold = table.Column<int>(type: "int", nullable: false),
-                    AvarageScore = table.Column<float>(type: "real", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    AvarageScore = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Users_CreatedById",
-                        column: x => x.CreatedById,
+                        name: "FK_Products_Users_CreatorId",
+                        column: x => x.CreatorId,
                         principalTable: "Users",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Products_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -224,9 +201,7 @@ namespace StoreAPI.Migrations
                     QuestionText = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsAnswered = table.Column<bool>(type: "bit", nullable: false),
-                    ProductId1 = table.Column<int>(type: "int", nullable: false),
-                    ProductId2 = table.Column<int>(type: "int", nullable: false)
+                    IsAnswered = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -236,12 +211,6 @@ namespace StoreAPI.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Questions_Products_ProductId1",
-                        column: x => x.ProductId1,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Questions_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -261,9 +230,7 @@ namespace StoreAPI.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     PurchaserId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductId1 = table.Column<int>(type: "int", nullable: false),
-                    ProductId2 = table.Column<int>(type: "int", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,12 +245,6 @@ namespace StoreAPI.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Reviews_Products_ProductId1",
-                        column: x => x.ProductId1,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reviews_Users_PurchaserId",
                         column: x => x.PurchaserId,
@@ -342,19 +303,9 @@ namespace StoreAPI.Migrations
                 column: "ShippingAddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId1",
-                table: "Orders",
-                column: "UserId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_CreatedById",
+                name: "IX_Products_CreatorId",
                 table: "Products",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_UserId",
-                table: "Products",
-                column: "UserId");
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_AuthorId",
@@ -367,24 +318,15 @@ namespace StoreAPI.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_ProductId1",
-                table: "Questions",
-                column: "ProductId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reviews_OrderId",
                 table: "Reviews",
-                column: "OrderId");
+                column: "OrderId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ProductId",
                 table: "Reviews",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_ProductId1",
-                table: "Reviews",
-                column: "ProductId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_PurchaserId",
@@ -396,18 +338,12 @@ namespace StoreAPI.Migrations
                 table: "Users",
                 column: "CartId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_DefaultBillingAddressId",
-                table: "Users",
-                column: "DefaultBillingAddressId");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_Addresses_Users_UserId",
                 table: "Addresses",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_CartItem_Carts_CartId",
@@ -434,10 +370,6 @@ namespace StoreAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Addresses_Users_UserId",
-                table: "Addresses");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Carts_Users_OwnerId",
                 table: "Carts");
 
@@ -463,10 +395,10 @@ namespace StoreAPI.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Carts");
