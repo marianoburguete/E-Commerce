@@ -8,6 +8,7 @@ namespace StoreAPI.Model
         public int Id { get; set; }
         [ForeignKey(nameof(User))]
         public int CreatorId { get; set; }
+        [JsonIgnore]
         public virtual User CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string Title { get; set; }

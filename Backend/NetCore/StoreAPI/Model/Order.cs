@@ -8,6 +8,7 @@ namespace StoreAPI.Model
         public int Id { get; set; }
         [ForeignKey("Purchaser")]
         public int PurchaserId { get; set; }
+        [JsonIgnore]
         public virtual User Purchaser { get; set; }
         public List<OrderItem> Items { get; set; } = new List<OrderItem>();
         public float SubTotal { get; set; }
@@ -16,11 +17,11 @@ namespace StoreAPI.Model
         
         [ForeignKey("ShippingAddress")]
         public int ShippingAddressId { get; set; }
-        public virtual Address ShippingAddress { get; set; }
+        public virtual AddressStatic ShippingAddress { get; set; }
 
         [ForeignKey("BillingAddress")]
         public int BillingAddressId { get; set; }        
-        public virtual Address BillingAddress { get; set; }
+        public virtual AddressStatic BillingAddress { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

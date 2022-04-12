@@ -22,81 +22,81 @@ namespace StoreAPI.Data
             modelBuilder.Entity<Cart>()
                 .HasOne(e => e.Owner)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra el carrito
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<CartItem>()
                 .HasOne(e => e.Product)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction); // No borro al producto si se borra la item del carrito
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Order>()
                 .HasOne(e => e.Purchaser)
                 .WithMany(d => d.Orders)
                 .HasForeignKey(e => e.PurchaserId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro el usuario si se borra la orden
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Order>()
                 .HasOne(e => e.ShippingAddress)
                 .WithMany(d => d.OrdersShipping)
                 .HasForeignKey(e => e.ShippingAddressId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro la direccion de envio si se borra la orden
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Order>()
                 .HasOne(e => e.BillingAddress)
                 .WithMany(d => d.OrdersBilling)
                 .HasForeignKey(e => e.BillingAddressId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro la direccion de facturacion si se borra la orden
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderItem>()
                 .HasOne(e => e.Product)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction); // No borro al producto si se borra el item de la orden
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Product>()
                 .HasOne(e => e.CreatedBy)
                 .WithMany(d => d.MyProducts)
                 .HasForeignKey(e => e.CreatorId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra el producto
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Product>()
                 .HasMany(e => e.Images)
                 .WithOne()
-                .OnDelete(DeleteBehavior.Cascade); // Borro las imagenes si se borra el producto
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Question>() // FIXED
+            modelBuilder.Entity<Question>()
                 .HasOne(e => e.Product)
                 .WithMany(d => d.Questions)
                 .HasForeignKey(e => e.ProductId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro el producto si se borra la pregunta
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Question>() // FIXED
+            modelBuilder.Entity<Question>()
                 .HasOne(e => e.Author)
                 .WithMany(d => d.Questions)
                 .HasForeignKey(e => e.AuthorId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra la pregunta
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Review>() // FIXED
+            modelBuilder.Entity<Review>()
                 .HasOne(e => e.Product)
                 .WithMany(d => d.Reviews)
                 .HasForeignKey(e => e.ProductId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro el producto si se borra la review
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Review>() // FIXED
+            modelBuilder.Entity<Review>()
                 .HasOne(e => e.Purchaser)
                 .WithMany(d => d.Reviews)
                 .HasForeignKey(e => e.PurchaserId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro al usuario si se borra la review
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Review>()
                 .HasOne(e => e.Order)
                 .WithOne()
-                .OnDelete(DeleteBehavior.NoAction); // No borro la orden si se borra la review
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Address>() // FIXED
+            modelBuilder.Entity<Address>()
                 .HasOne(e => e.User)
                 .WithMany(d => d.Addresses)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.NoAction); // No borro el usuario si se borra la direccion
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -8,9 +8,11 @@ namespace StoreAPI.Model
         public int Id { get; set; }
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
+        [JsonIgnore]
         public virtual Product Product { get; set; }
         [ForeignKey(nameof(User))]
         public int AuthorId { get; set; }
+        [JsonIgnore]
         public virtual User Author { get; set; }
         public string QuestionText { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
