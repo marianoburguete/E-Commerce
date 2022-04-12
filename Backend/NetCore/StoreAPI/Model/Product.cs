@@ -17,11 +17,11 @@ namespace StoreAPI.Model
         public DateTime EndsAt { get; set; }
         public float Price { get; set; }
         public int Quantity { get; set; }
+        public int Sales { get; set; }
         public List<Image> Images { get; set; } = new List<Image>();
         public int ItemsSold { get; set; } = 0;
         public float AvarageScore { get; set; } = 0;
         public List<Question> Questions { get; set; } = new List<Question>();
         public List<Review> Reviews { get; set; } = new List<Review>();
-        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }

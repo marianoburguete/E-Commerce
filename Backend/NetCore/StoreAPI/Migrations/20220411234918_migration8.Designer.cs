@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreAPI.Data;
 
@@ -11,9 +12,10 @@ using StoreAPI.Data;
 namespace StoreAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220411234918_migration8")]
+    partial class migration8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,6 +141,9 @@ namespace StoreAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PurchaserId")
                         .HasColumnType("int");
 
@@ -157,6 +162,8 @@ namespace StoreAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BillingAddressId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("PurchaserId");
 
@@ -225,9 +232,6 @@ namespace StoreAPI.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sales")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartsAt")
@@ -429,6 +433,10 @@ namespace StoreAPI.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("StoreAPI.Model.Product", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId");
+
                     b.HasOne("StoreAPI.Model.User", "Purchaser")
                         .WithMany("Orders")
                         .HasForeignKey("PurchaserId")
@@ -549,6 +557,8 @@ namespace StoreAPI.Migrations
             modelBuilder.Entity("StoreAPI.Model.Product", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("Questions");
 

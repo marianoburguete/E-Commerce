@@ -37,12 +37,14 @@ namespace StoreAPI.Data
 
             modelBuilder.Entity<Order>()
                 .HasOne(e => e.ShippingAddress)
-                .WithMany()
+                .WithMany(d => d.OrdersShipping)
+                .HasForeignKey(e => e.ShippingAddressId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro la direccion de envio si se borra la orden
 
             modelBuilder.Entity<Order>()
                 .HasOne(e => e.BillingAddress)
-                .WithMany()
+                .WithMany(d => d.OrdersBilling)
+                .HasForeignKey(e => e.BillingAddressId)
                 .OnDelete(DeleteBehavior.NoAction); // No borro la direccion de facturacion si se borra la orden
 
             modelBuilder.Entity<OrderItem>()
@@ -89,26 +91,12 @@ namespace StoreAPI.Data
                 .HasOne(e => e.Order)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction); // No borro la orden si se borra la review
-            
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.BillingAddresses)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade); // Borro las direcciones de facturacion si se borra el usuario
 
-            modelBuilder.Entity<User>()
-                .HasOne(e => e.Cart)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Cascade); // Borro el carrito si se borra el usuario
-
-            modelBuilder.Entity<User>()
-                .HasOne(e => e.DefaultBillingAddress)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<User>()
-                .HasOne(e => e.DefaultShippingAddress)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Address>() // FIXED
+                .HasOne(e => e.User)
+                .WithMany(d => d.Addresses)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction); // No borro el usuario si se borra la direccion
         }
     }
 }

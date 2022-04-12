@@ -12,15 +12,7 @@
         public string LastName { get; set; }
         public DateTime Birth { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public List<Address> ShippingAddresses { get; set; } = new List<Address>();
-        public List<Address> BillingAddresses { get; set; } = new List<Address>();
-        [ForeignKey("DefaultShippingAddress")]
-        public virtual int? DefaultShippingAddressId { get; set; }
-        public virtual Address? DefaultShippingAddress { get; set; }
-        [ForeignKey("DefaultBillingAddress")]
-        public virtual int? DefaultBillingAddressId { get; set; }
-        public virtual Address? DefaultBillingAddress { get; set; }
-        [ForeignKey(nameof(Cart))]
+        public List<Address> Addresses { get; set; } = new List<Address>();
         public int? CartId { get; set; }
         public virtual Cart? Cart { get; set; }
         public List<Order> Orders { get; set; } = new List<Order>();
