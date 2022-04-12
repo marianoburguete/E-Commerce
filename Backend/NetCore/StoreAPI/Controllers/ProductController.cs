@@ -32,7 +32,7 @@ namespace StoreAPI.Controllers
                 .FindAsync(product.CreatorId);
             if (user == null)
             {
-                return BadRequest("User not found");
+                return NotFound("User not found");
             }
 
             var newProduct = new Product
@@ -57,13 +57,13 @@ namespace StoreAPI.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult<List<Product>>> Put([FromRoute] int Id, [FromBody] ProductDto product)
+        public async Task<ActionResult> Put([FromRoute] int Id, [FromBody] ProductDto product)
         {
-            var p = await _context.Products
-                .FindAsync(Id);
+            var p = await _context.Products.FindAsync(Id);
+            
             if (p == null)
             {
-                return BadRequest("Product not found");
+                return NotFound();
             }
 
             _context.Update(product);
@@ -74,11 +74,9 @@ namespace StoreAPI.Controllers
 
         [HttpDelete]
         [Authorize]
-        public async Task<ActionResult<List<Product>>> Delete([FromRoute] int productId)
+        public async Task<ActionResult> Delete([FromRoute] int productId)
         {
-            var product = await _context.Products
-                .Where(x => x.Id == productId)
-                .FirstOrDefaultAsync();
+            var product = await _context.Products.FindAsync(productId);
 
             if (product == null)
             {
@@ -119,6 +117,19 @@ namespace StoreAPI.Controllers
             }
 
             return product;
+        }
+
+        [HttpGet]
+        [Route("questions")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<Question>>> GetQuestions([FromRoute] int productId, [FromRoute] bool answeredOnly)
+        {
+            var questions = await _context.Questions
+                .Where(x => x.ProductId == productId)
+                .Where(x => answeredOnly ? x.IsAnswered : true)
+                .ToListAsync();
+            
+            return questions;
         }
     }
 }
