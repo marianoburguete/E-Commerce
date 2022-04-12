@@ -1,6 +1,4 @@
-﻿using StoreAPI.Model;
-
-namespace StoreAPI.Data
+﻿namespace StoreAPI.Data
 {
     public class DataContext : DbContext
     {
@@ -8,7 +6,7 @@ namespace StoreAPI.Data
         {
 
         }
-        
+
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -19,11 +17,6 @@ namespace StoreAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Cart>()
-                .HasOne(e => e.Owner)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<CartItem>()
                 .HasOne(e => e.Product)
                 .WithMany()

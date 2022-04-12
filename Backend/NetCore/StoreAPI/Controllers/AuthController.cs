@@ -37,6 +37,8 @@
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+            var cart = new Cart();
+
             var user = new User
             {
                 Username = request.Username,
@@ -46,26 +48,12 @@
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Birth = request.Birth,
+                Cart = cart
             };
 
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            /* IDK if nessesary, I hope not */
-            var newUser = await _context.Users.Where(x => x.Username == request.Username).FirstAsync();
-            var cart = new Cart
-            {
-                OwnerId = newUser.Id,
-            };
-
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
-
-            var newCart = await _context.Carts.Where(x => x.OwnerId == newUser.Id).FirstAsync();
-            newUser.CartId = cart.Id;
-
-            await _context.SaveChangesAsync();
-            /* ---------------------------- */
 
             return await Login(new UserLoginDto
             {
@@ -78,7 +66,7 @@
         public async Task<ActionResult<string>> Login(UserLoginDto request)
         {
             var user = await _context.Users.Where(x => x.Username == request.Username).FirstOrDefaultAsync();
-            
+
             if (user == null)
             {
                 return BadRequest("Invalid username");
@@ -88,7 +76,7 @@
             {
                 return BadRequest("Invalid password");
             }
-            
+
             string token = CreateToken(user);
             return Ok(token);
         }
@@ -119,7 +107,7 @@
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-            
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(

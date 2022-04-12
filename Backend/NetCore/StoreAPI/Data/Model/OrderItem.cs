@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace StoreAPI.Model
+﻿namespace StoreAPI.Model
 {
     public class OrderItem
     {

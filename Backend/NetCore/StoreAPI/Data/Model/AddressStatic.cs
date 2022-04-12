@@ -11,6 +11,6 @@
         [JsonIgnore]
         public List<Order> OrdersShipping { get; set; } = new List<Order>();
         [JsonIgnore]
-        public List<Order> OrdersBilling { get; set; } = new List<Order>();        
+        public List<Order> OrdersBilling { get; set; } = new List<Order>();
     }
 }

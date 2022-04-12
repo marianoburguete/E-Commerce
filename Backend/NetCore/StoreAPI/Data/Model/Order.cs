@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace StoreAPI.Model
+﻿namespace StoreAPI.Model
 {
     public class Order
     {
@@ -14,15 +12,15 @@ namespace StoreAPI.Model
         public float SubTotal { get; set; }
         public float Tax { get; set; }
         public float Total { get; set; }
-        
+
         [ForeignKey("ShippingAddress")]
         public int ShippingAddressId { get; set; }
         public virtual AddressStatic ShippingAddress { get; set; }
 
         [ForeignKey("BillingAddress")]
-        public int BillingAddressId { get; set; }        
+        public int BillingAddressId { get; set; }
         public virtual AddressStatic BillingAddress { get; set; }
-        
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

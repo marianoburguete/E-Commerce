@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace StoreAPI.Controllers
 {
@@ -44,7 +43,7 @@ namespace StoreAPI.Controllers
 
         [HttpPost]
         [Route("new")]
-        public async Task<ActionResult<List<Product>>> Post([FromBody]ProductDto product)
+        public async Task<ActionResult<List<Product>>> Post([FromBody] ProductDto product)
         {
             var user = await _context.Users
                 .FindAsync(product.CreatorId);
