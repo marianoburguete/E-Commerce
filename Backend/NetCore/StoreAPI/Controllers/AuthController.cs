@@ -23,7 +23,7 @@
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult<string>> Register(UserDto request)
         {
             if (await _context.Users.Where(x => x.Username == request.Username).AnyAsync())
             {
@@ -51,20 +51,40 @@
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(user);
+            /* IDK if nessesary, I hope not */
+            var newUser = await _context.Users.Where(x => x.Username == request.Username).FirstAsync();
+            var cart = new Cart
+            {
+                OwnerId = newUser.Id,
+            };
+
+            _context.Carts.Add(cart);
+            await _context.SaveChangesAsync();
+
+            var newCart = await _context.Carts.Where(x => x.OwnerId == newUser.Id).FirstAsync();
+            newUser.CartId = cart.Id;
+
+            await _context.SaveChangesAsync();
+            /* ---------------------------- */
+
+            return await Login(new UserLoginDto
+            {
+                Username = request.Username,
+                Password = request.Password
+            });
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<string>> Login(UserLoginDto request)
         {
-            var user = await _context.Users.FindAsync(request.Username);
+            var user = await _context.Users.Where(x => x.Username == request.Username).FirstOrDefaultAsync();
             
             if (user == null)
             {
                 return BadRequest("Invalid username");
             }
 
-            if(!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             {
                 return BadRequest("Invalid password");
             }

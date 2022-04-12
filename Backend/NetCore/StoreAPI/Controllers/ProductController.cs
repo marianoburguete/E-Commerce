@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace StoreAPI.Controllers
@@ -8,26 +8,42 @@ namespace StoreAPI.Controllers
     [Authorize]
     public class ProductController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly DataContext _context;
 
         public ProductController(IConfiguration configuration, DataContext context)
         {
-            _configuration = configuration;
             _context = context;
         }
-        
+
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> Get([FromQuery]int userId)
+        [Route("list")]
+        public async Task<ActionResult<List<Product>>> List([FromQuery] int userId)
         {
             var products = await _context.Products
                 .Where(x => x.CreatorId == userId)
                 .ToListAsync();
-            
+
             return products;
         }
 
+        [HttpGet]
+        [Route("details")]
+        public async Task<ActionResult<Product>> Details([FromQuery] int productId)
+        {
+            var product = await _context.Products
+                .Where(x => x.Id == productId)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
+        }
+
         [HttpPost]
+        [Route("new")]
         public async Task<ActionResult<List<Product>>> Post([FromBody]ProductDto product)
         {
             var user = await _context.Users
@@ -54,7 +70,7 @@ namespace StoreAPI.Controllers
             _context.Products.Add(newProduct);
             await _context.SaveChangesAsync();
 
-            return await Get(product.CreatorId);
+            return Ok();
         }
     }
 }
